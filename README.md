@@ -57,3 +57,4 @@ python app.py
 ```
 - Open on PC: `http://localhost:5000`
 - Open on Android: `http://<your-local-ip>:5000` (shown in terminal)
+
