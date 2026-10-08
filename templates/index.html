@@ -1,0 +1,2019 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+    <meta name="theme-color" content="#1a1d24">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="description" content="Realistic colorful 3D handheld scientific and statistical calculator with step-by-step processes.">
+    <link rel="manifest" href="/manifest.json">
+    <title>PNC 3D Handheld Scientific &amp; Statistical Calculator</title>
+    <style>
+        :root {
+            --body-bg: #101216;
+            --chassis-top: #2c3240;
+            --chassis-bot: #191c24;
+            --chassis-rim: #3f475a;
+            --lcd-bezel: #12151b;
+            --lcd-bg: #0d1410;
+            --lcd-text: #4ade80;
+            --lcd-glow: rgba(74, 222, 128, 0.15);
+            
+            /* 3D Button Palettes (Top, Bottom, 3D Shadow Base) */
+            --num-top: #4a5263;
+            --num-bot: #333a47;
+            --num-shadow: #1e222a;
+            --num-text: #ffffff;
+
+            --op-top: #fb8c00;
+            --op-bot: #e65100;
+            --op-shadow: #8f3200;
+            --op-text: #ffffff;
+
+            --sci-top: #00acc1;
+            --sci-bot: #00796b;
+            --sci-shadow: #004d40;
+            --sci-text: #ffffff;
+
+            --stat-top: #ab47bc;
+            --stat-bot: #7b1fa2;
+            --stat-shadow: #4a148c;
+            --stat-text: #ffffff;
+
+            --del-top: #ec407a;
+            --del-bot: #ad1457;
+            --del-shadow: #6a0031;
+            --del-text: #ffffff;
+
+            --clear-top: #ef5350;
+            --clear-bot: #b71c1c;
+            --clear-shadow: #6d0a0a;
+            --clear-text: #ffffff;
+
+            --eq-top: #43a047;
+            --eq-bot: #2e7d32;
+            --eq-shadow: #1b5e20;
+            --eq-text: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: radial-gradient(circle at 50% 20%, #1e2430 0%, #0d0f13 100%);
+            min-height: 100vh;
+            min-height: -webkit-fill-available;
+            padding: 24px 12px;
+            padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #e2e8f0;
+        }
+
+        /* Outer 3D Handheld Chassis */
+        .calculator-chassis {
+            width: 100%;
+            max-width: 450px;
+            background: linear-gradient(165deg, var(--chassis-top) 0%, var(--chassis-bot) 100%);
+            border-radius: 36px;
+            padding: 22px 20px 28px;
+            box-shadow: 
+                0 25px 60px rgba(0, 0, 0, 0.85),
+                0 10px 25px rgba(0, 0, 0, 0.6),
+                0 0 0 2px var(--chassis-rim),
+                inset 0 2px 3px rgba(255, 255, 255, 0.25),
+                inset 0 -4px 6px rgba(0, 0, 0, 0.6);
+            position: relative;
+            transition: max-width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .calculator-chassis.wide-mode {
+            max-width: 900px;
+        }
+
+        /* Top Brand & Solar Strip Area */
+        .chassis-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+            padding: 0 4px;
+        }
+
+        .brand-logo-area {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .pnc-imposed-logo {
+            font-size: 24px;
+            font-weight: 900;
+            letter-spacing: 3px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Arial Black', sans-serif;
+            background: linear-gradient(180deg, #ffffff 0%, #cbd5e1 45%, #64748b 80%, #334155 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.95));
+            border: 1.5px solid rgba(255, 255, 255, 0.28);
+            background-color: #151821;
+            padding: 2px 10px;
+            border-radius: 8px;
+            box-shadow: 
+                inset 0 2px 4px rgba(0, 0, 0, 0.9),
+                inset 0 -1px 2px rgba(255, 255, 255, 0.15),
+                0 2px 5px rgba(0, 0, 0, 0.6);
+            display: inline-block;
+            line-height: 1.1;
+        }
+
+        .brand-title span.badge-3d {
+            background: linear-gradient(135deg, #fb8c00, #ec407a);
+            color: #fff;
+            font-size: 10px;
+            padding: 2px 7px;
+            border-radius: 5px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.3);
+        }
+
+        .brand-subtitle {
+            font-size: 9.5px;
+            color: #94a3b8;
+            font-weight: 700;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            margin-top: 4px;
+            padding-left: 2px;
+        }
+
+        /* Authentic Solar Cell Panel */
+        .solar-cell-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .solar-panel {
+            display: flex;
+            gap: 2.5px;
+            background: #110e0c;
+            border: 1px solid #4a382d;
+            border-radius: 4px;
+            padding: 2.5px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.8), 0 1px 0 rgba(255,255,255,0.1);
+        }
+
+        .solar-segment {
+            width: 14px;
+            height: 18px;
+            background: linear-gradient(135deg, #423023 0%, #261c14 100%);
+            border-radius: 1.5px;
+            box-shadow: inset 0 1px 1px rgba(255,255,255,0.15);
+        }
+
+        .btn-device-modal {
+            background: #252c3b;
+            color: #38bdf8;
+            border: 1px solid #3b475e;
+            padding: 4px 10px;
+            border-radius: 14px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.15);
+            transition: all 0.15s;
+        }
+
+        .btn-device-modal:active {
+            transform: translateY(1px);
+        }
+
+        /* ================= 3D Recessed LCD Display ================= */
+        .screen-bezel {
+            background: var(--lcd-bezel);
+            border-radius: 18px;
+            padding: 8px;
+            border: 1px solid #2d3342;
+            box-shadow: 
+                inset 0 4px 10px rgba(0, 0, 0, 0.9),
+                0 1px 0 rgba(255, 255, 255, 0.1);
+            margin-bottom: 18px;
+        }
+
+        .lcd-display {
+            background: linear-gradient(180deg, var(--lcd-bg) 0%, #080c09 100%);
+            border-radius: 12px;
+            padding: 12px 14px;
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.9);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(74, 222, 128, 0.1);
+        }
+
+        /* Glass Reflection Sheen */
+        .lcd-display::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 40%;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.07) 0%, transparent 100%);
+            pointer-events: none;
+            border-radius: 12px 12px 0 0;
+        }
+
+        .lcd-top-status {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 10.5px;
+            font-weight: 700;
+            font-family: 'Consolas', 'Courier New', monospace;
+            color: #4ade80;
+            opacity: 0.85;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+        }
+
+        .lcd-top-status span.active-tag {
+            background: rgba(74, 222, 128, 0.2);
+            padding: 1px 5px;
+            border-radius: 3px;
+            border: 1px solid rgba(74, 222, 128, 0.3);
+        }
+
+        .display-input {
+            width: 100%;
+            height: 38px;
+            font-size: clamp(18px, 5vw, 22px);
+            text-align: right;
+            padding: 2px 4px;
+            background: transparent;
+            color: #f0fdf4;
+            border: none;
+            outline: none;
+            font-family: 'Consolas', 'Courier New', monospace;
+            text-shadow: 0 0 6px var(--lcd-glow);
+        }
+
+        .display-input::placeholder {
+            color: #3f624d;
+            font-size: 13.5px;
+            font-family: inherit;
+        }
+
+        .lcd-result {
+            color: #4ade80;
+            font-size: clamp(22px, 6vw, 30px);
+            font-weight: 700;
+            text-align: right;
+            min-height: 36px;
+            word-break: break-all;
+            margin-top: 2px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            text-shadow: 0 0 8px var(--lcd-glow);
+        }
+
+        /* ================= 3D Mode Switcher (D-Pad Style) ================= */
+        .mode-selector-3d {
+            display: flex;
+            background: #14171f;
+            border-radius: 14px;
+            padding: 5px;
+            gap: 6px;
+            border: 1px solid #2b3240;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.7);
+            margin-bottom: 18px;
+        }
+
+        .mode-btn {
+            flex: 1;
+            padding: 10px 14px;
+            border-radius: 10px;
+            border: none;
+            font-size: 13.5px;
+            font-weight: 700;
+            cursor: pointer;
+            touch-action: manipulation;
+            transition: all 0.15s ease;
+            color: #94a3b8;
+            background: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .mode-btn:hover {
+            color: #f1f5f9;
+        }
+
+        .mode-btn.active.sci-btn {
+            color: #ffffff;
+            background: linear-gradient(180deg, #00acc1 0%, #00796b 100%);
+            box-shadow: 
+                0 3px 0 #004d40,
+                0 4px 6px rgba(0,0,0,0.4),
+                inset 0 1px 0 rgba(255,255,255,0.3);
+            transform: translateY(-1px);
+        }
+
+        .mode-btn.active.stat-btn {
+            color: #ffffff;
+            background: linear-gradient(180deg, #43a047 0%, #2e7d32 100%);
+            box-shadow: 
+                0 3px 0 #1b5e20,
+                0 4px 6px rgba(0,0,0,0.4),
+                inset 0 1px 0 rgba(255,255,255,0.3);
+            transform: translateY(-1px);
+        }
+
+        /* Views */
+        .view-panel {
+            display: none;
+        }
+
+        .view-panel.active {
+            display: block;
+        }
+
+        /* Quick Function Pills */
+        .quick-functions-bar {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 12px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+
+        .quick-functions-bar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .quick-pill {
+            background: linear-gradient(180deg, #2b3240 0%, #1e232d 100%);
+            color: #94a3b8;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 5px 11px;
+            border-radius: 6px;
+            border: 1px solid #3d475a;
+            box-shadow: 0 2px 0 #14171e, inset 0 1px 0 rgba(255,255,255,0.12);
+            cursor: pointer;
+            white-space: nowrap;
+            touch-action: manipulation;
+            user-select: none;
+            transition: all 0.12s;
+        }
+
+        .quick-pill:active {
+            transform: translateY(2px);
+            box-shadow: 0 0 0 #14171e;
+            color: #38bdf8;
+        }
+
+        /* ================= 3D Handheld Button Grid ================= */
+        .keypad-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        button.btn-3d {
+            position: relative;
+            min-height: 52px;
+            padding: 10px 4px;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            border-radius: 12px;
+            touch-action: manipulation;
+            user-select: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.06s ease, box-shadow 0.06s ease;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+        }
+
+        /* Number Buttons */
+        .btn-num {
+            background: linear-gradient(180deg, var(--num-top) 0%, var(--num-bot) 100%);
+            color: var(--num-text);
+            box-shadow: 
+                0 5px 0 var(--num-shadow),
+                0 6px 6px rgba(0, 0, 0, 0.45),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-num:active {
+            transform: translateY(4px);
+            box-shadow: 
+                0 1px 0 var(--num-shadow),
+                0 2px 3px rgba(0, 0, 0, 0.45),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        /* Operators */
+        .btn-op {
+            background: linear-gradient(180deg, var(--op-top) 0%, var(--op-bot) 100%);
+            color: var(--op-text);
+            font-size: 20px;
+            box-shadow: 
+                0 5px 0 var(--op-shadow),
+                0 6px 6px rgba(0, 0, 0, 0.45),
+                inset 0 1px 0 rgba(255, 255, 255, 0.35),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-op:active {
+            transform: translateY(4px);
+            box-shadow: 
+                0 1px 0 var(--op-shadow),
+                0 2px 3px rgba(0, 0, 0, 0.45),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        /* Scientific Functions */
+        .btn-sci {
+            background: linear-gradient(180deg, var(--sci-top) 0%, var(--sci-bot) 100%);
+            color: var(--sci-text);
+            font-size: 15px;
+            box-shadow: 
+                0 5px 0 var(--sci-shadow),
+                0 6px 6px rgba(0, 0, 0, 0.45),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-sci:active {
+            transform: translateY(4px);
+            box-shadow: 
+                0 1px 0 var(--sci-shadow),
+                0 2px 3px rgba(0, 0, 0, 0.45),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        /* Stats Functions */
+        .btn-stat {
+            background: linear-gradient(180deg, var(--stat-top) 0%, var(--stat-bot) 100%);
+            color: var(--stat-text);
+            font-size: 14.5px;
+            box-shadow: 
+                0 5px 0 var(--stat-shadow),
+                0 6px 6px rgba(0, 0, 0, 0.45),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-stat:active {
+            transform: translateY(4px);
+            box-shadow: 
+                0 1px 0 var(--stat-shadow),
+                0 2px 3px rgba(0, 0, 0, 0.45),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        /* Clear Button (Red) */
+        .btn-clr {
+            background: linear-gradient(180deg, var(--clear-top) 0%, var(--clear-bot) 100%);
+            color: var(--clear-text);
+            box-shadow: 
+                0 5px 0 var(--clear-shadow),
+                0 6px 6px rgba(0, 0, 0, 0.45),
+                inset 0 1px 0 rgba(255, 255, 255, 0.35),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-clr:active {
+            transform: translateY(4px);
+            box-shadow: 
+                0 1px 0 var(--clear-shadow),
+                0 2px 3px rgba(0, 0, 0, 0.45),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        /* Backspace Button (Rose / Pink) */
+        .btn-del {
+            background: linear-gradient(180deg, var(--del-top) 0%, var(--del-bot) 100%);
+            color: var(--del-text);
+            box-shadow: 
+                0 5px 0 var(--del-shadow),
+                0 6px 6px rgba(0, 0, 0, 0.45),
+                inset 0 1px 0 rgba(255, 255, 255, 0.35),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-del:active {
+            transform: translateY(4px);
+            box-shadow: 
+                0 1px 0 var(--del-shadow),
+                0 2px 3px rgba(0, 0, 0, 0.45),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        /* Execute / Equals Button (Green) */
+        .btn-exe {
+            background: linear-gradient(180deg, var(--eq-top) 0%, var(--eq-bot) 100%);
+            color: var(--eq-text);
+            font-size: 22px;
+            grid-column: span 2;
+            box-shadow: 
+                0 5px 0 var(--eq-shadow),
+                0 6px 6px rgba(0, 0, 0, 0.45),
+                inset 0 1px 0 rgba(255, 255, 255, 0.35),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-exe:active {
+            transform: translateY(4px);
+            box-shadow: 
+                0 1px 0 var(--eq-shadow),
+                0 2px 3px rgba(0, 0, 0, 0.45),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        /* ================= 3D STATISTICAL PROCESS STYLES ================= */
+        .stats-deck-container {
+            width: 100%;
+        }
+
+        .stats-entry-chassis {
+            background: #14171f;
+            border: 1px solid #2d3342;
+            border-radius: 16px;
+            padding: 18px;
+            margin-bottom: 20px;
+            box-shadow: inset 0 2px 6px rgba(0,0,0,0.6);
+        }
+
+        .stats-entry-chassis label {
+            display: block;
+            font-size: 14.5px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: #38bdf8;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .stats-hint {
+            font-size: 12.5px;
+            color: #94a3b8;
+            margin-bottom: 10px;
+        }
+
+        .stats-textarea-3d {
+            width: 100%;
+            height: 80px;
+            background: #090b0e;
+            border: 1px solid #333a4c;
+            border-radius: 10px;
+            padding: 10px 12px;
+            color: #4ade80;
+            font-size: 14.5px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            resize: vertical;
+            outline: none;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.8);
+            transition: border-color 0.2s;
+        }
+
+        .stats-textarea-3d:focus {
+            border-color: #38bdf8;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.8), 0 0 0 2px rgba(56, 189, 248, 0.25);
+        }
+
+        .stats-controls-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+            align-items: center;
+        }
+
+        .btn-action-3d {
+            padding: 11px 18px;
+            border-radius: 10px;
+            border: none;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            touch-action: manipulation;
+            transition: transform 0.08s ease, box-shadow 0.08s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .btn-calc-main {
+            background: linear-gradient(180deg, #43a047 0%, #2e7d32 100%);
+            color: #fff;
+            box-shadow: 0 4px 0 #1b5e20, 0 5px 6px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.3);
+            flex: 1 1 180px;
+        }
+
+        .btn-calc-main:active {
+            transform: translateY(3px);
+            box-shadow: 0 1px 0 #1b5e20;
+        }
+
+        .btn-sub-3d {
+            background: linear-gradient(180deg, #374151 0%, #1f2937 100%);
+            color: #e2e8f0;
+            box-shadow: 0 4px 0 #111827, 0 5px 6px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.18);
+        }
+
+        .btn-sub-3d:active {
+            transform: translateY(3px);
+            box-shadow: 0 1px 0 #111827;
+        }
+
+        /* Error Notification Banner */
+        .error-banner-3d {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid #dc2626;
+            color: #fca5a5;
+            padding: 12px 14px;
+            border-radius: 10px;
+            margin-bottom: 18px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Quick Jump Navigation */
+        .stats-jump-pills {
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+            padding: 4px 0 14px 0;
+            margin-bottom: 8px;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+
+        .stats-jump-pills::-webkit-scrollbar {
+            display: none;
+        }
+
+        .stat-jump-item {
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #94a3b8;
+            background: #191d26;
+            border: 1px solid #333a4a;
+            border-radius: 20px;
+            cursor: pointer;
+            white-space: nowrap;
+            text-decoration: none;
+            box-shadow: 0 2px 0 #0f1218;
+            transition: all 0.12s;
+        }
+
+        .stat-jump-item:hover, .stat-jump-item:active {
+            color: #38bdf8;
+            border-color: #38bdf8;
+            transform: translateY(1px);
+        }
+
+        /* 3D Colorful Metric Cards Deck */
+        .metric-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .metric-card-3d {
+            background: linear-gradient(160deg, #1e2430 0%, #151821 100%);
+            border-radius: 12px;
+            padding: 14px;
+            border: 1px solid #313a4d;
+            box-shadow: 0 4px 0 #0d1017, 0 6px 10px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.15s ease;
+        }
+
+        .metric-card-3d:hover {
+            transform: translateY(-2px);
+        }
+
+        .metric-card-3d::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: #64748b;
+        }
+
+        .metric-card-3d.c-green::before { background: #4ade80; }
+        .metric-card-3d.c-cyan::before { background: #38bdf8; }
+        .metric-card-3d.c-orange::before { background: #fb923c; }
+        .metric-card-3d.c-purple::before { background: #c084fc; }
+
+        .metric-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #94a3b8;
+            font-weight: 700;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .metric-title span.sym {
+            color: #38bdf8;
+            font-family: 'Consolas', monospace;
+            font-size: 12px;
+        }
+
+        .metric-val {
+            font-size: clamp(17px, 4vw, 21px);
+            font-weight: 800;
+            color: #f8fafc;
+            font-family: 'Consolas', 'Courier New', monospace;
+            word-break: break-word;
+        }
+
+        .metric-card-3d.c-green .metric-val { color: #4ade80; }
+        .metric-card-3d.c-cyan .metric-val { color: #38bdf8; }
+
+        /* Step-by-Step Calculation Section */
+        .process-deck {
+            margin-top: 10px;
+        }
+
+        .process-title-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #2d3445;
+        }
+
+        .process-title-bar h2 {
+            font-size: clamp(16px, 4vw, 19px);
+            color: #f8fafc;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .process-chip {
+            background: rgba(56, 189, 248, 0.15);
+            color: #38bdf8;
+            font-size: 11.5px;
+            padding: 3px 10px;
+            border-radius: 14px;
+            font-weight: 700;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+        }
+
+        .step-module-3d {
+            background: #161922;
+            border: 1px solid #2e3547;
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 0 #0d0f15, inset 0 1px 0 rgba(255,255,255,0.08);
+        }
+
+        .step-module-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .step-heading {
+            font-size: 15px;
+            font-weight: 700;
+            color: #f1f5f9;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .step-index-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0284c7, #0369a1);
+            color: #fff;
+            font-size: 12px;
+            font-weight: 800;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+        }
+
+        .formula-callout-3d {
+            background: #0d1017;
+            border-left: 3px solid #38bdf8;
+            padding: 8px 12px;
+            border-radius: 4px 8px 8px 4px;
+            font-family: 'Consolas', monospace;
+            font-size: 13.5px;
+            color: #7dd3fc;
+            margin: 8px 0 12px 0;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.6);
+        }
+
+        .step-workings {
+            font-size: 13.5px;
+            line-height: 1.6;
+            color: #cbd5e1;
+        }
+
+        .step-workings .working-row {
+            margin: 6px 0;
+            padding: 8px 10px;
+            background: #11141c;
+            border-radius: 6px;
+            font-family: 'Consolas', monospace;
+            font-size: 13px;
+            word-break: break-all;
+            border: 1px solid #232836;
+        }
+
+        .step-workings .tag-lbl {
+            color: #94a3b8;
+            margin-right: 6px;
+            font-family: sans-serif;
+            font-size: 12px;
+        }
+
+        .result-highlight-3d {
+            margin-top: 10px;
+            padding: 10px 14px;
+            background: rgba(74, 222, 128, 0.12);
+            border: 1px solid rgba(74, 222, 128, 0.35);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: #86efac;
+            font-weight: 700;
+            font-size: 14.5px;
+        }
+
+        .result-highlight-3d .val-bold {
+            font-family: 'Consolas', monospace;
+            font-size: 16.5px;
+            color: #4ade80;
+        }
+
+        /* 3D Handheld Matrix / Deviation Table */
+        .table-scroll-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            margin: 12px 0;
+            border-radius: 10px;
+            border: 1px solid #2b3345;
+            -webkit-overflow-scrolling: touch;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.5);
+        }
+
+        .mobile-swipe-guide {
+            display: none;
+            font-size: 11.5px;
+            color: #38bdf8;
+            margin-bottom: 6px;
+            text-align: right;
+        }
+
+        table.matrix-table {
+            width: 100%;
+            min-width: 480px;
+            border-collapse: collapse;
+            font-size: 13px;
+            text-align: right;
+            background: #10131a;
+        }
+
+        table.matrix-table th {
+            background: #1b212c;
+            color: #94a3b8;
+            font-weight: 700;
+            padding: 10px 12px;
+            border-bottom: 2px solid #2c3547;
+            white-space: nowrap;
+        }
+
+        table.matrix-table th:first-child,
+        table.matrix-table td:first-child {
+            text-align: center;
+            width: 48px;
+        }
+
+        table.matrix-table td {
+            padding: 8px 12px;
+            border-bottom: 1px solid #1c222e;
+            color: #e2e8f0;
+            font-family: 'Consolas', monospace;
+        }
+
+        table.matrix-table tr:hover td {
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        table.matrix-table tr.total-bar td {
+            background: #16201a;
+            font-weight: 800;
+            border-top: 2px solid #2c3547;
+            border-bottom: none;
+            color: #4ade80;
+        }
+
+        /* Frequency Chips */
+        .freq-chips-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 8px;
+        }
+
+        .freq-badge-3d {
+            background: #12151e;
+            border: 1px solid #2b3345;
+            border-radius: 6px;
+            padding: 5px 10px;
+            font-size: 12.5px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 2px 0 #0a0c12;
+        }
+
+        .freq-badge-3d .f-val {
+            font-family: 'Consolas', monospace;
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .freq-badge-3d .f-count {
+            background: #0284c7;
+            color: #fff;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        /* Modal Overlay for Android Connection */
+        .modal-shade {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-body-3d {
+            background: linear-gradient(160deg, #242b38 0%, #151821 100%);
+            border: 1px solid #3d475a;
+            border-radius: 20px;
+            padding: 24px;
+            max-width: 480px;
+            width: 100%;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.9), inset 0 1px 0 rgba(255,255,255,0.2);
+        }
+
+        .modal-body-3d h3 {
+            font-size: 18px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .modal-body-3d p {
+            font-size: 13.5px;
+            color: #cbd5e1;
+            line-height: 1.5;
+            margin-bottom: 14px;
+        }
+
+        .url-box-3d {
+            background: #0d1017;
+            border: 1px solid #333a4a;
+            border-radius: 10px;
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.7);
+        }
+
+        .url-box-3d code {
+            font-family: 'Consolas', monospace;
+            font-size: 15px;
+            color: #38bdf8;
+            font-weight: bold;
+        }
+
+        .btn-copy-3d {
+            background: linear-gradient(180deg, #38bdf8 0%, #0284c7 100%);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 2px 0 #0369a1;
+            transition: all 0.15s;
+        }
+
+        .btn-copy-3d:active {
+            transform: translateY(2px);
+            box-shadow: 0 0 0 #0369a1;
+        }
+
+        .modal-steps {
+            font-size: 13px;
+            color: #94a3b8;
+            margin-left: 20px;
+            line-height: 1.6;
+            margin-bottom: 18px;
+        }
+
+        .btn-modal-close-3d {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(180deg, #374151 0%, #1f2937 100%);
+            border: 1px solid #4b5563;
+            color: #fff;
+            font-weight: 700;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 3px 0 #111827;
+        }
+
+        .btn-modal-close-3d:active {
+            transform: translateY(2px);
+            box-shadow: 0 1px 0 #111827;
+        }
+
+        /* Responsive Breakpoints */
+        @media (max-width: 600px) {
+            body { padding: 12px 6px; }
+            .calculator-chassis { 
+                border-radius: 26px; 
+                padding: 16px 12px 20px; 
+            }
+            .keypad-grid { gap: 7px; }
+            button.btn-3d { min-height: 48px; font-size: 16px; border-radius: 10px; }
+            .metric-cards-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+            .mobile-swipe-guide { display: block; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 3D Handheld Calculator Chassis Body -->
+    <div class="calculator-chassis {% if active_tab == 'stats' %}wide-mode{% endif %}" id="calcChassis">
+        
+        <!-- Chassis Top Branding & Solar Cell Strip -->
+        <div class="chassis-header">
+            <div class="brand-logo-area">
+                <div class="brand-title">
+                    <span class="pnc-imposed-logo">PNC</span>
+                    <span class="badge-3d">3D-HD</span>
+                </div>
+                <div class="brand-subtitle">Natural V.P.A.M. &bull; Dual Engine</div>
+            </div>
+
+            <div class="solar-cell-container">
+                <div class="solar-panel" title="Simulated Solar Power Cells">
+                    <div class="solar-segment"></div>
+                    <div class="solar-segment"></div>
+                    <div class="solar-segment"></div>
+                    <div class="solar-segment"></div>
+                </div>
+
+                <button type="button" class="btn-device-modal" onclick="openConnectModal()" title="Open on Android phone / tablet">
+                    📱 Android
+                </button>
+            </div>
+        </div>
+
+        <!-- 3D Recessed LCD Display Bezel -->
+        <div class="screen-bezel">
+            <div class="lcd-display">
+                <div class="lcd-top-status">
+                    <span><span class="active-tag">PNC</span> &nbsp; <span class="active-tag">DEG</span> &nbsp; MATH</span>
+                    <span>{% if active_tab == 'stats' %}STAT MODE{% else %}SCI-CALC{% endif %} &bull; 3D</span>
+                </div>
+
+                <input type="text" name="expression" id="display" class="display-input" 
+                       value="{{ expression if expression else '' }}" 
+                       placeholder="e.g. sin(45) + sqrt(16) or mean(10,20,30)" 
+                       required autocomplete="off">
+                
+                <div class="lcd-result" id="calcResult">
+                    {% if result is defined and result != '' %}
+                        = {{ result }}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- 3D Mode Selector Switch (D-Pad style) -->
+        <div class="mode-selector-3d">
+            <button type="button" class="mode-btn sci-btn {% if active_tab != 'stats' %}active{% endif %}" onclick="switchTab('scientific')">
+                <span>⚡</span> Scientific Keypad
+            </button>
+            <button type="button" class="mode-btn stat-btn {% if active_tab == 'stats' %}active{% endif %}" onclick="switchTab('stats')">
+                <span>📊</span> Statistical Process
+            </button>
+        </div>
+
+        <!-- ================= VIEW 1: SCIENTIFIC KEYPAD ================= -->
+        <div id="scientificView" class="view-panel {% if active_tab != 'stats' %}active{% endif %}">
+            <form id="scientificForm" action="/calculate" method="POST" onsubmit="handleScientificSubmit(event)">
+                <!-- Quick Statistical and Constant Pills -->
+                <div class="quick-functions-bar">
+                    <span class="quick-pill" onclick="append('mean(')">mean(...)</span>
+                    <span class="quick-pill" onclick="append('median(')">median(...)</span>
+                    <span class="quick-pill" onclick="append('stdev(')">stdev(...)</span>
+                    <span class="quick-pill" onclick="append('variance(')">variance(...)</span>
+                    <span class="quick-pill" onclick="append('pi')">π</span>
+                    <span class="quick-pill" onclick="append('e')">e</span>
+                </div>
+
+                <!-- 3D Tactile Keypad Grid -->
+                <div class="keypad-grid">
+                    <!-- Row 1: Trigonometric & Logarithm -->
+                    <button type="button" class="btn-3d btn-sci" onclick="append('sin(')">sin</button>
+                    <button type="button" class="btn-3d btn-sci" onclick="append('cos(')">cos</button>
+                    <button type="button" class="btn-3d btn-sci" onclick="append('tan(')">tan</button>
+                    <button type="button" class="btn-3d btn-sci" onclick="append('log10(')">log</button>
+
+                    <!-- Row 2: Roots, Powers & Brackets -->
+                    <button type="button" class="btn-3d btn-sci" onclick="append('ln(')">ln</button>
+                    <button type="button" class="btn-3d btn-sci" onclick="append('sqrt(')">√</button>
+                    <button type="button" class="btn-3d btn-sci" onclick="append('(')">(</button>
+                    <button type="button" class="btn-3d btn-sci" onclick="append(')')">)</button>
+
+                    <!-- Row 3: Stats shortcuts & Arithmetic Operators -->
+                    <button type="button" class="btn-3d btn-stat" onclick="append('mean(')">mean</button>
+                    <button type="button" class="btn-3d btn-stat" onclick="append('stdev(')">stdev</button>
+                    <button type="button" class="btn-3d btn-op" onclick="append('^')">^</button>
+                    <button type="button" class="btn-3d btn-op" onclick="append('/')">÷</button>
+
+                    <!-- Row 4: Digits 7,8,9 & Multiply -->
+                    <button type="button" class="btn-3d btn-num" onclick="append('7')">7</button>
+                    <button type="button" class="btn-3d btn-num" onclick="append('8')">8</button>
+                    <button type="button" class="btn-3d btn-num" onclick="append('9')">9</button>
+                    <button type="button" class="btn-3d btn-op" onclick="append('*')">×</button>
+
+                    <!-- Row 5: Digits 4,5,6 & Subtract -->
+                    <button type="button" class="btn-3d btn-num" onclick="append('4')">4</button>
+                    <button type="button" class="btn-3d btn-num" onclick="append('5')">5</button>
+                    <button type="button" class="btn-3d btn-num" onclick="append('6')">6</button>
+                    <button type="button" class="btn-3d btn-op" onclick="append('-')">−</button>
+
+                    <!-- Row 6: Digits 1,2,3 & Add -->
+                    <button type="button" class="btn-3d btn-num" onclick="append('1')">1</button>
+                    <button type="button" class="btn-3d btn-num" onclick="append('2')">2</button>
+                    <button type="button" class="btn-3d btn-num" onclick="append('3')">3</button>
+                    <button type="button" class="btn-3d btn-op" onclick="append('+')">+</button>
+
+                    <!-- Row 7: Digit 0, Decimal, Comma, Delete -->
+                    <button type="button" class="btn-3d btn-num" onclick="append('0')">0</button>
+                    <button type="button" class="btn-3d btn-num" onclick="append('.')">.</button>
+                    <button type="button" class="btn-3d btn-num" onclick="append(', ')">,</button>
+                    <button type="button" class="btn-3d btn-del" onclick="backspace()" title="Backspace">⌫ DEL</button>
+
+                    <!-- Row 8: Clear & 3D Equals -->
+                    <button type="button" class="btn-3d btn-clr" onclick="clearDisplay()">AC</button>
+                    <button type="submit" class="btn-3d btn-exe">=</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- ================= VIEW 2: STATISTICAL PROCESS ================= -->
+        <div id="statsView" class="view-panel {% if active_tab == 'stats' %}active{% endif %}">
+            <div class="stats-deck-container">
+                <!-- Data Entry Section -->
+                <div class="stats-entry-chassis">
+                    <form id="statsForm" action="/calculate-stats" method="POST" onsubmit="handleStatsSubmit(event)">
+                        <label for="statsInput">
+                            <span>📊</span> Statistical Dataset Entry:
+                        </label>
+                        <div class="stats-hint">Enter numbers separated by commas, spaces, or lines (e.g. <code>12, 15, 12, 28, 22, 19, 24</code>)</div>
+                        
+                        <textarea name="data_input" id="statsInput" class="stats-textarea-3d" 
+                                  placeholder="Type or paste values, e.g. 10, 15, 18, 22, 22, 30, 35...">{{ data_input if data_input else '' }}</textarea>
+                        
+                        <div class="stats-controls-row">
+                            <button type="submit" class="btn-action-3d btn-calc-main" id="statsSubmitBtn">
+                                <span>⚡</span> Calculate &amp; Show Process
+                            </button>
+                            <button type="button" class="btn-action-3d btn-sub-3d" onclick="loadSampleData(1)">
+                                🎲 Sample 1
+                            </button>
+                            <button type="button" class="btn-action-3d btn-sub-3d" onclick="loadSampleData(2)">
+                                🎲 Sample 2
+                            </button>
+                            <button type="button" class="btn-action-3d btn-sub-3d" onclick="clearStatsInput()">
+                                🧹 Clear
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Error Container -->
+                <div id="statsErrorContainer" style="{% if not stats_error %}display: none;{% endif %}">
+                    <div class="error-banner-3d">
+                        <span>⚠️</span> <span id="statsErrorMessage">{{ stats_error if stats_error else '' }}</span>
+                    </div>
+                </div>
+
+                <!-- Results & Step-by-Step Solutions Container -->
+                <div id="statsResultsContainer" style="{% if not stats_data %}display: none;{% endif %}">
+                    {% if stats_data %}
+                        <!-- Quick Jump Bar -->
+                        <div class="stats-jump-pills">
+                            <a href="#summaryGrid" class="stat-jump-item">📊 Summary</a>
+                            <a href="#step-mean" class="stat-jump-item">x̄ Mean</a>
+                            <a href="#step-median" class="stat-jump-item">Median</a>
+                            <a href="#step-mode" class="stat-jump-item">Mode</a>
+                            <a href="#step-deviation" class="stat-jump-item">📋 Deviation Table</a>
+                            <a href="#step-variance" class="stat-jump-item">s² Variance</a>
+                            <a href="#step-stdev" class="stat-jump-item">s Std Dev</a>
+                            <a href="#step-mad" class="stat-jump-item">MAD</a>
+                            <a href="#step-quartiles" class="stat-jump-item">Quartiles</a>
+                        </div>
+
+                        <!-- 3D Metric Cards Deck -->
+                        <div class="metric-cards-grid" id="summaryGrid">
+                            <div class="metric-card-3d c-cyan">
+                                <div class="metric-title">Count <span class="sym">n</span></div>
+                                <div class="metric-val">{{ stats_data.summary.n }}</div>
+                            </div>
+
+                            <div class="metric-card-3d c-orange">
+                                <div class="metric-title">Sum <span class="sym">Σ x</span></div>
+                                <div class="metric-val">{{ stats_data.summary.sum }}</div>
+                            </div>
+
+                            <div class="metric-card-3d c-green">
+                                <div class="metric-title">Mean <span class="sym">x̄</span></div>
+                                <div class="metric-val">{{ stats_data.summary.mean }}</div>
+                            </div>
+
+                            <div class="metric-card-3d c-green">
+                                <div class="metric-title">Median <span class="sym">M</span></div>
+                                <div class="metric-val">{{ stats_data.summary.median }}</div>
+                            </div>
+
+                            <div class="metric-card-3d c-purple">
+                                <div class="metric-title">Mode <span class="sym">Mo</span></div>
+                                <div class="metric-val">{{ stats_data.summary.mode }}</div>
+                            </div>
+
+                            <div class="metric-card-3d c-orange">
+                                <div class="metric-title">Range <span class="sym">R</span></div>
+                                <div class="metric-val">{{ stats_data.summary.range }}</div>
+                            </div>
+
+                            <div class="metric-card-3d c-green">
+                                <div class="metric-title">Sample SD <span class="sym">s</span></div>
+                                <div class="metric-val">{{ stats_data.summary.sample_stdev }}</div>
+                            </div>
+
+                            <div class="metric-card-3d c-cyan">
+                                <div class="metric-title">Pop SD <span class="sym">σ</span></div>
+                                <div class="metric-val">{{ stats_data.summary.pop_stdev }}</div>
+                            </div>
+
+                            <div class="metric-card-3d c-purple">
+                                <div class="metric-title">Sample Var <span class="sym">s²</span></div>
+                                <div class="metric-val">{{ stats_data.summary.sample_variance }}</div>
+                            </div>
+
+                            <div class="metric-card-3d c-cyan">
+                                <div class="metric-title">Pop Var <span class="sym">σ²</span></div>
+                                <div class="metric-val">{{ stats_data.summary.pop_variance }}</div>
+                            </div>
+
+                            <div class="metric-card-3d c-orange">
+                                <div class="metric-title">MAD <span class="sym">MAD</span></div>
+                                <div class="metric-val">{{ stats_data.summary.mad }}</div>
+                            </div>
+
+                            <div class="metric-card-3d c-cyan">
+                                <div class="metric-title">Interquartile <span class="sym">IQR</span></div>
+                                <div class="metric-val">{{ stats_data.summary.iqr }}</div>
+                            </div>
+                        </div>
+
+                        <!-- Step-by-Step Calculation Solutions -->
+                        <div class="process-deck">
+                            <div class="process-title-bar">
+                                <h2><span>📝</span> Step-by-Step Handheld Process</h2>
+                                <span class="process-chip">Full Solutions</span>
+                            </div>
+
+                            <!-- Step 1: Mean -->
+                            <div class="step-module-3d" id="step-mean">
+                                <div class="step-module-header">
+                                    <div class="step-heading">
+                                        <span class="step-index-badge">1</span> {{ stats_data.steps.mean.title }}
+                                    </div>
+                                </div>
+                                <div class="formula-callout-3d">Formula: {{ stats_data.steps.mean.formula }}</div>
+                                <div class="step-workings">
+                                    <div class="working-row"><span class="tag-lbl">Step 1a:</span> {{ stats_data.steps.mean.step1 }}</div>
+                                    <div class="working-row"><span class="tag-lbl">Step 1b:</span> {{ stats_data.steps.mean.step2 }}</div>
+                                </div>
+                                <div class="result-highlight-3d">
+                                    <span>Calculated Mean (x̄):</span>
+                                    <span class="val-bold">{{ stats_data.steps.mean.result }}</span>
+                                </div>
+                            </div>
+
+                            <!-- Step 2: Median -->
+                            <div class="step-module-3d" id="step-median">
+                                <div class="step-module-header">
+                                    <div class="step-heading">
+                                        <span class="step-index-badge">2</span> {{ stats_data.steps.median.title }}
+                                    </div>
+                                </div>
+                                <div class="formula-callout-3d">Rule: {{ stats_data.steps.median.formula }}</div>
+                                <div class="step-workings">
+                                    <div class="working-row"><span class="tag-lbl">Step 2a:</span> {{ stats_data.steps.median.step1 }}</div>
+                                    <div class="working-row"><span class="tag-lbl">Step 2b:</span> {{ stats_data.steps.median.step2 }}</div>
+                                </div>
+                                <div class="result-highlight-3d">
+                                    <span>Calculated Median:</span>
+                                    <span class="val-bold">{{ stats_data.steps.median.result }}</span>
+                                </div>
+                            </div>
+
+                            <!-- Step 3: Mode -->
+                            <div class="step-module-3d" id="step-mode">
+                                <div class="step-module-header">
+                                    <div class="step-heading">
+                                        <span class="step-index-badge">3</span> {{ stats_data.steps.mode.title }}
+                                    </div>
+                                </div>
+                                <div class="formula-callout-3d">Definition: {{ stats_data.steps.mode.formula }}</div>
+                                <div class="step-workings">
+                                    <div class="working-row"><span class="tag-lbl">Frequency Count:</span></div>
+                                    <div class="freq-chips-list">
+                                        {% for item in stats_data.frequency_table %}
+                                            <div class="freq-badge-3d">
+                                                <span class="f-val">{{ item.value }}</span>
+                                                <span class="f-count">{{ item.count }}×</span>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <div class="result-highlight-3d">
+                                    <span>Resulting Mode:</span>
+                                    <span class="val-bold">{{ stats_data.steps.mode.result }}</span>
+                                </div>
+                            </div>
+
+                            <!-- Step 4: Deviation Table -->
+                            <div class="step-module-3d" id="step-deviation">
+                                <div class="step-module-header">
+                                    <div class="step-heading">
+                                        <span class="step-index-badge">4</span> Deviation Table &amp; Sum of Squares (SS)
+                                    </div>
+                                </div>
+                                <div class="formula-callout-3d">
+                                    Deviation = (xᵢ - x̄) | Squared Deviation = (xᵢ - x̄)² | Sum of Squares (SS) = Σ(xᵢ - x̄)²
+                                </div>
+                                <div class="mobile-swipe-guide">👉 Swipe matrix horizontally to view all columns</div>
+                                <div class="table-scroll-wrapper">
+                                    <table class="matrix-table">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>xᵢ (Value)</th>
+                                                <th>(xᵢ - x̄) Deviation</th>
+                                                <th>|xᵢ - x̄| Abs Dev</th>
+                                                <th>(xᵢ - x̄)² Sq Dev</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for row in stats_data.deviation_table %}
+                                                <tr>
+                                                    <td>{{ row.index }}</td>
+                                                    <td>{{ row.x }}</td>
+                                                    <td>{{ row.dev }}</td>
+                                                    <td>{{ row.abs_dev }}</td>
+                                                    <td>{{ row.sq_dev }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                            <tr class="total-bar">
+                                                <td>Total</td>
+                                                <td>Σ x = {{ stats_data.table_totals.sum_x }}</td>
+                                                <td>Σ dev = {{ stats_data.table_totals.sum_dev }}</td>
+                                                <td>Σ |dev| = {{ stats_data.table_totals.sum_abs_dev }}</td>
+                                                <td>SS = {{ stats_data.table_totals.sum_sq_dev }}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Step 5: Variance -->
+                            <div class="step-module-3d" id="step-variance">
+                                <div class="step-module-header">
+                                    <div class="step-heading">
+                                        <span class="step-index-badge">5</span> Variance Calculation Process
+                                    </div>
+                                </div>
+                                <div class="formula-callout-3d">
+                                    Sample: {{ stats_data.steps.sample_variance.formula }} &nbsp;|&nbsp; Population: {{ stats_data.steps.pop_variance.formula }}
+                                </div>
+                                <div class="step-workings">
+                                    <div class="working-row"><span class="tag-lbl">Sample s²:</span> {{ stats_data.steps.sample_variance.step1 }}</div>
+                                    <div class="working-row"><span class="tag-lbl">Substitution:</span> {{ stats_data.steps.sample_variance.step2 }} = {{ stats_data.steps.sample_variance.result }}</div>
+                                    <div class="working-row"><span class="tag-lbl">Population σ²:</span> {{ stats_data.steps.pop_variance.step2 }} = {{ stats_data.steps.pop_variance.result }}</div>
+                                </div>
+                                <div class="result-highlight-3d">
+                                    <span>Sample Variance (s²):</span>
+                                    <span class="val-bold">{{ stats_data.steps.sample_variance.result }}</span>
+                                </div>
+                            </div>
+
+                            <!-- Step 6: Standard Deviation -->
+                            <div class="step-module-3d" id="step-stdev">
+                                <div class="step-module-header">
+                                    <div class="step-heading">
+                                        <span class="step-index-badge">6</span> Standard Deviation Process
+                                    </div>
+                                </div>
+                                <div class="formula-callout-3d">
+                                    Sample: {{ stats_data.steps.sample_stdev.formula }} &nbsp;|&nbsp; Population: {{ stats_data.steps.pop_stdev.formula }}
+                                </div>
+                                <div class="step-workings">
+                                    <div class="working-row"><span class="tag-lbl">Sample s:</span> {{ stats_data.steps.sample_stdev.step1 }} = {{ stats_data.steps.sample_stdev.result }}</div>
+                                    <div class="working-row"><span class="tag-lbl">Population σ:</span> {{ stats_data.steps.pop_stdev.step1 }} = {{ stats_data.steps.pop_stdev.result }}</div>
+                                    <div class="working-row"><span class="tag-lbl">Standard Error:</span> SE = s / √n = {{ stats_data.summary.se_mean }}</div>
+                                </div>
+                                <div class="result-highlight-3d">
+                                    <span>Sample Standard Deviation (s):</span>
+                                    <span class="val-bold">{{ stats_data.steps.sample_stdev.result }}</span>
+                                </div>
+                            </div>
+
+                            <!-- Step 7: MAD -->
+                            <div class="step-module-3d" id="step-mad">
+                                <div class="step-module-header">
+                                    <div class="step-heading">
+                                        <span class="step-index-badge">7</span> {{ stats_data.steps.mad.title }}
+                                    </div>
+                                </div>
+                                <div class="formula-callout-3d">Formula: {{ stats_data.steps.mad.formula }}</div>
+                                <div class="step-workings">
+                                    <div class="working-row"><span class="tag-lbl">Step 7a:</span> {{ stats_data.steps.mad.step1 }}</div>
+                                    <div class="working-row"><span class="tag-lbl">Step 7b:</span> {{ stats_data.steps.mad.step2 }}</div>
+                                </div>
+                                <div class="result-highlight-3d">
+                                    <span>Calculated MAD:</span>
+                                    <span class="val-bold">{{ stats_data.steps.mad.result }}</span>
+                                </div>
+                            </div>
+
+                            <!-- Step 8: Quartiles -->
+                            <div class="step-module-3d" id="step-quartiles">
+                                <div class="step-module-header">
+                                    <div class="step-heading">
+                                        <span class="step-index-badge">8</span> {{ stats_data.steps.quartiles.title }}
+                                    </div>
+                                </div>
+                                <div class="formula-callout-3d">Formula: {{ stats_data.steps.quartiles.formula }}</div>
+                                <div class="step-workings">
+                                    <div class="working-row"><span class="tag-lbl">Step 8a:</span> {{ stats_data.steps.quartiles.step1 }}</div>
+                                    <div class="working-row"><span class="tag-lbl">Step 8b:</span> {{ stats_data.steps.quartiles.step2 }}</div>
+                                    <div class="working-row"><span class="tag-lbl">Step 8c:</span> {{ stats_data.steps.quartiles.step3 }}</div>
+                                    <div class="working-row"><span class="tag-lbl">Range:</span> {{ stats_data.steps.range.step1 }} &rarr; {{ stats_data.steps.range.step2 }}</div>
+                                </div>
+                                <div class="result-highlight-3d">
+                                    <span>Interquartile Range (IQR):</span>
+                                    <span class="val-bold">{{ stats_data.summary.iqr }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Android Access Modal Overlay -->
+    <div class="modal-shade" id="connectModal" onclick="closeConnectModal(event)">
+        <div class="modal-body-3d" onclick="event.stopPropagation()">
+            <h3><span>📱</span> Open Handheld on Android</h3>
+            <p>Connect your Android phone or tablet to the same Wi-Fi network as this PC, then open your mobile browser at:</p>
+            
+            <div class="url-box-3d">
+                <code id="androidUrl">http://{{ local_ip }}:{{ port }}</code>
+                <button type="button" class="btn-copy-3d" onclick="copyAndroidUrl()">Copy URL</button>
+            </div>
+
+            <ol class="modal-steps">
+                <li>Make sure PC and Android device are on the <strong>same Wi-Fi</strong>.</li>
+                <li>Open <strong>Google Chrome</strong> on Android and visit the URL above.</li>
+                <li>Tap Chrome menu (<strong>⋮</strong>) &rarr; <strong>"Add to Home screen"</strong> to run it in full-screen 3D!</li>
+            </ol>
+
+            <button type="button" class="btn-modal-close-3d" onclick="closeConnectModal()">Done</button>
+        </div>
+    </div>
+
+    <!-- ================= CLIENT JAVASCRIPT ================= -->
+    <script>
+        // Tactile Haptic Vibration for Android devices
+        function triggerHaptic() {
+            if (navigator.vibrate) {
+                try { navigator.vibrate(14); } catch (e) {}
+            }
+        }
+
+        // Mode Switching
+        function switchTab(tabName) {
+            triggerHaptic();
+            const chassis = document.getElementById('calcChassis');
+            const scientificView = document.getElementById('scientificView');
+            const statsView = document.getElementById('statsView');
+            const sciBtn = document.querySelector('.sci-btn');
+            const statBtn = document.querySelector('.stat-btn');
+
+            if (tabName === 'scientific') {
+                chassis.classList.remove('wide-mode');
+                scientificView.classList.add('active');
+                statsView.classList.remove('active');
+                sciBtn.classList.add('active');
+                statBtn.classList.remove('active');
+            } else {
+                chassis.classList.add('wide-mode');
+                scientificView.classList.remove('active');
+                statsView.classList.add('active');
+                sciBtn.classList.remove('active');
+                statBtn.classList.add('active');
+            }
+        }
+
+        // Scientific Keypad
+        function append(val) {
+            triggerHaptic();
+            const display = document.getElementById('display');
+            display.value += val;
+        }
+
+        function clearDisplay() {
+            triggerHaptic();
+            document.getElementById('display').value = '';
+            document.getElementById('calcResult').innerText = '';
+        }
+
+        function backspace() {
+            triggerHaptic();
+            const display = document.getElementById('display');
+            display.value = display.value.slice(0, -1);
+        }
+
+        // PC Physical Keyboard Support
+        document.addEventListener('keydown', function(e) {
+            const statsInput = document.getElementById('statsInput');
+            if (document.activeElement === statsInput) return;
+
+            const sciBtn = document.querySelector('.sci-btn');
+            if (!sciBtn.classList.contains('active')) return;
+
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                handleScientificSubmit(e);
+            } else if (e.key === 'Escape') {
+                clearDisplay();
+            }
+        });
+
+        // Scientific calculation AJAX handler
+        async function handleScientificSubmit(e) {
+            if (e && e.preventDefault) e.preventDefault();
+            triggerHaptic();
+            const display = document.getElementById('display');
+            const resultDiv = document.getElementById('calcResult');
+            const expression = display.value.trim();
+
+            if (!expression) {
+                resultDiv.innerText = '';
+                return;
+            }
+
+            try {
+                const response = await fetch('/calculate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ expression: expression })
+                });
+
+                const data = await response.json();
+                if (data.error) {
+                    resultDiv.innerText = data.error;
+                    resultDiv.style.color = '#ef4444';
+                } else {
+                    resultDiv.innerText = '= ' + data.result;
+                    resultDiv.style.color = '#4ade80';
+                }
+            } catch (err) {
+                document.getElementById('scientificForm').submit();
+            }
+        }
+
+        // Statistical Calculator AJAX handler
+        async function handleStatsSubmit(e) {
+            e.preventDefault();
+            triggerHaptic();
+            const inputVal = document.getElementById('statsInput').value.trim();
+            const errorContainer = document.getElementById('statsErrorContainer');
+            const errorMessage = document.getElementById('statsErrorMessage');
+            const resultsContainer = document.getElementById('statsResultsContainer');
+
+            if (!inputVal) {
+                errorMessage.innerText = 'Please enter at least one number.';
+                errorContainer.style.display = 'block';
+                resultsContainer.style.display = 'none';
+                return;
+            }
+
+            try {
+                const response = await fetch('/calculate-stats', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ data_input: inputVal })
+                });
+
+                const resData = await response.json();
+
+                if (!response.ok || !resData.success) {
+                    errorMessage.innerText = resData.error || 'Failed to compute statistics.';
+                    errorContainer.style.display = 'block';
+                    resultsContainer.style.display = 'none';
+                    return;
+                }
+
+                errorContainer.style.display = 'none';
+                renderStatsUI(resData.stats);
+                resultsContainer.style.display = 'block';
+
+            } catch (err) {
+                document.getElementById('statsForm').submit();
+            }
+        }
+
+        // Render complete Statistics UI dynamically
+        function renderStatsUI(stats) {
+            const container = document.getElementById('statsResultsContainer');
+            
+            let html = `
+                <div class="stats-jump-pills">
+                    <a href="#summaryGrid" class="stat-jump-item">📊 Summary</a>
+                    <a href="#step-mean" class="stat-jump-item">x̄ Mean</a>
+                    <a href="#step-median" class="stat-jump-item">Median</a>
+                    <a href="#step-mode" class="stat-jump-item">Mode</a>
+                    <a href="#step-deviation" class="stat-jump-item">📋 Deviation Table</a>
+                    <a href="#step-variance" class="stat-jump-item">s² Variance</a>
+                    <a href="#step-stdev" class="stat-jump-item">s Std Dev</a>
+                    <a href="#step-mad" class="stat-jump-item">MAD</a>
+                    <a href="#step-quartiles" class="stat-jump-item">Quartiles</a>
+                </div>
+
+                <div class="metric-cards-grid" id="summaryGrid">
+                    <div class="metric-card-3d c-cyan">
+                        <div class="metric-title">Count <span class="sym">n</span></div>
+                        <div class="metric-val">${stats.summary.n}</div>
+                    </div>
+                    <div class="metric-card-3d c-orange">
+                        <div class="metric-title">Sum <span class="sym">Σ x</span></div>
+                        <div class="metric-val">${stats.summary.sum}</div>
+                    </div>
+                    <div class="metric-card-3d c-green">
+                        <div class="metric-title">Mean <span class="sym">x̄</span></div>
+                        <div class="metric-val">${stats.summary.mean}</div>
+                    </div>
+                    <div class="metric-card-3d c-green">
+                        <div class="metric-title">Median <span class="sym">M</span></div>
+                        <div class="metric-val">${stats.summary.median}</div>
+                    </div>
+                    <div class="metric-card-3d c-purple">
+                        <div class="metric-title">Mode <span class="sym">Mo</span></div>
+                        <div class="metric-val">${stats.summary.mode}</div>
+                    </div>
+                    <div class="metric-card-3d c-orange">
+                        <div class="metric-title">Range <span class="sym">R</span></div>
+                        <div class="metric-val">${stats.summary.range}</div>
+                    </div>
+                    <div class="metric-card-3d c-green">
+                        <div class="metric-title">Sample SD <span class="sym">s</span></div>
+                        <div class="metric-val">${stats.summary.sample_stdev}</div>
+                    </div>
+                    <div class="metric-card-3d c-cyan">
+                        <div class="metric-title">Pop SD <span class="sym">σ</span></div>
+                        <div class="metric-val">${stats.summary.pop_stdev}</div>
+                    </div>
+                    <div class="metric-card-3d c-purple">
+                        <div class="metric-title">Sample Var <span class="sym">s²</span></div>
+                        <div class="metric-val">${stats.summary.sample_variance}</div>
+                    </div>
+                    <div class="metric-card-3d c-cyan">
+                        <div class="metric-title">Pop Var <span class="sym">σ²</span></div>
+                        <div class="metric-val">${stats.summary.pop_variance}</div>
+                    </div>
+                    <div class="metric-card-3d c-orange">
+                        <div class="metric-title">MAD <span class="sym">MAD</span></div>
+                        <div class="metric-val">${stats.summary.mad}</div>
+                    </div>
+                    <div class="metric-card-3d c-cyan">
+                        <div class="metric-title">Interquartile <span class="sym">IQR</span></div>
+                        <div class="metric-val">${stats.summary.iqr}</div>
+                    </div>
+                </div>
+
+                <div class="process-deck">
+                    <div class="process-title-bar">
+                        <h2><span>📝</span> Step-by-Step Handheld Process</h2>
+                        <span class="process-chip">Full Solutions</span>
+                    </div>
+
+                    <div class="step-module-3d" id="step-mean">
+                        <div class="step-module-header">
+                            <div class="step-heading">
+                                <span class="step-index-badge">1</span> ${stats.steps.mean.title}
+                            </div>
+                        </div>
+                        <div class="formula-callout-3d">Formula: ${stats.steps.mean.formula}</div>
+                        <div class="step-workings">
+                            <div class="working-row"><span class="tag-lbl">Step 1a:</span> ${stats.steps.mean.step1}</div>
+                            <div class="working-row"><span class="tag-lbl">Step 1b:</span> ${stats.steps.mean.step2}</div>
+                        </div>
+                        <div class="result-highlight-3d">
+                            <span>Calculated Mean (x̄):</span>
+                            <span class="val-bold">${stats.steps.mean.result}</span>
+                        </div>
+                    </div>
+
+                    <div class="step-module-3d" id="step-median">
+                        <div class="step-module-header">
+                            <div class="step-heading">
+                                <span class="step-index-badge">2</span> ${stats.steps.median.title}
+                            </div>
+                        </div>
+                        <div class="formula-callout-3d">Rule: ${stats.steps.median.formula}</div>
+                        <div class="step-workings">
+                            <div class="working-row"><span class="tag-lbl">Step 2a:</span> ${stats.steps.median.step1}</div>
+                            <div class="working-row"><span class="tag-lbl">Step 2b:</span> ${stats.steps.median.step2}</div>
+                        </div>
+                        <div class="result-highlight-3d">
+                            <span>Calculated Median:</span>
+                            <span class="val-bold">${stats.steps.median.result}</span>
+                        </div>
+                    </div>
+
+                    <div class="step-module-3d" id="step-mode">
+                        <div class="step-module-header">
+                            <div class="step-heading">
+                                <span class="step-index-badge">3</span> ${stats.steps.mode.title}
+                            </div>
+                        </div>
+                        <div class="formula-callout-3d">Definition: ${stats.steps.mode.formula}</div>
+                        <div class="step-workings">
+                            <div class="working-row"><span class="tag-lbl">Frequency Count:</span></div>
+                            <div class="freq-chips-list">
+                                ${stats.frequency_table.map(item => `
+                                    <div class="freq-badge-3d">
+                                        <span class="f-val">${item.value}</span>
+                                        <span class="f-count">${item.count}×</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                        <div class="result-highlight-3d">
+                            <span>Resulting Mode:</span>
+                            <span class="val-bold">${stats.steps.mode.result}</span>
+                        </div>
+                    </div>
+
+                    <div class="step-module-3d" id="step-deviation">
+                        <div class="step-module-header">
+                            <div class="step-heading">
+                                <span class="step-index-badge">4</span> Deviation Table &amp; Sum of Squares (SS)
+                            </div>
+                        </div>
+                        <div class="formula-callout-3d">
+                            Deviation = (xᵢ - x̄) | Squared Deviation = (xᵢ - x̄)² | Sum of Squares (SS) = Σ(xᵢ - x̄)²
+                        </div>
+                        <div class="mobile-swipe-guide">👉 Swipe matrix horizontally to view all columns</div>
+                        <div class="table-scroll-wrapper">
+                            <table class="matrix-table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>xᵢ (Value)</th>
+                                        <th>(xᵢ - x̄) Deviation</th>
+                                        <th>|xᵢ - x̄| Abs Dev</th>
+                                        <th>(xᵢ - x̄)² Sq Dev</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${stats.deviation_table.map(row => `
+                                        <tr>
+                                            <td>${row.index}</td>
+                                            <td>${row.x}</td>
+                                            <td>${row.dev}</td>
+                                            <td>${row.abs_dev}</td>
+                                            <td>${row.sq_dev}</td>
+                                        </tr>
+                                    `).join('')}
+                                    <tr class="total-bar">
+                                        <td>Total</td>
+                                        <td>Σ x = ${stats.table_totals.sum_x}</td>
+                                        <td>Σ dev = ${stats.table_totals.sum_dev}</td>
+                                        <td>Σ |dev| = ${stats.table_totals.sum_abs_dev}</td>
+                                        <td>SS = ${stats.table_totals.sum_sq_dev}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="step-module-3d" id="step-variance">
+                        <div class="step-module-header">
+                            <div class="step-heading">
+                                <span class="step-index-badge">5</span> Variance Calculation Process
+                            </div>
+                        </div>
+                        <div class="formula-callout-3d">
+                            Sample: ${stats.steps.sample_variance.formula} &nbsp;|&nbsp; Population: ${stats.steps.pop_variance.formula}
+                        </div>
+                        <div class="step-workings">
+                            <div class="working-row"><span class="tag-lbl">Sample s²:</span> ${stats.steps.sample_variance.step1}</div>
+                            <div class="working-row"><span class="tag-lbl">Substitution:</span> ${stats.steps.sample_variance.step2} = ${stats.steps.sample_variance.result}</div>
+                            <div class="working-row"><span class="tag-lbl">Population σ²:</span> ${stats.steps.pop_variance.step2} = ${stats.steps.pop_variance.result}</div>
+                        </div>
+                        <div class="result-highlight-3d">
+                            <span>Sample Variance (s²):</span>
+                            <span class="val-bold">${stats.steps.sample_variance.result}</span>
+                        </div>
+                    </div>
+
+                    <div class="step-module-3d" id="step-stdev">
+                        <div class="step-module-header">
+                            <div class="step-heading">
+                                <span class="step-index-badge">6</span> Standard Deviation Process
+                            </div>
+                        </div>
+                        <div class="formula-callout-3d">
+                            Sample: ${stats.steps.sample_stdev.formula} &nbsp;|&nbsp; Population: ${stats.steps.pop_stdev.formula}
+                        </div>
+                        <div class="step-workings">
+                            <div class="working-row"><span class="tag-lbl">Sample s:</span> ${stats.steps.sample_stdev.step1} = ${stats.steps.sample_stdev.result}</div>
+                            <div class="working-row"><span class="tag-lbl">Population σ:</span> ${stats.steps.pop_stdev.step1} = ${stats.steps.pop_stdev.result}</div>
+                            <div class="working-row"><span class="tag-lbl">Standard Error:</span> SE = s / √n = ${stats.summary.se_mean}</div>
+                        </div>
+                        <div class="result-highlight-3d">
+                            <span>Sample Standard Deviation (s):</span>
+                            <span class="val-bold">${stats.steps.sample_stdev.result}</span>
+                        </div>
+                    </div>
+
+                    <div class="step-module-3d" id="step-mad">
+                        <div class="step-module-header">
+                            <div class="step-heading">
+                                <span class="step-index-badge">7</span> ${stats.steps.mad.title}
+                            </div>
+                        </div>
+                        <div class="formula-callout-3d">Formula: ${stats.steps.mad.formula}</div>
+                        <div class="step-workings">
+                            <div class="working-row"><span class="tag-lbl">Step 7a:</span> ${stats.steps.mad.step1}</div>
+                            <div class="working-row"><span class="tag-lbl">Step 7b:</span> ${stats.steps.mad.step2}</div>
+                        </div>
+                        <div class="result-highlight-3d">
+                            <span>Calculated MAD:</span>
+                            <span class="val-bold">${stats.steps.mad.result}</span>
+                        </div>
+                    </div>
+
+                    <div class="step-module-3d" id="step-quartiles">
+                        <div class="step-module-header">
+                            <div class="step-heading">
+                                <span class="step-index-badge">8</span> ${stats.steps.quartiles.title}
+                            </div>
+                        </div>
+                        <div class="formula-callout-3d">Formula: ${stats.steps.quartiles.formula}</div>
+                        <div class="step-workings">
+                            <div class="working-row"><span class="tag-lbl">Step 8a:</span> ${stats.steps.quartiles.step1}</div>
+                            <div class="working-row"><span class="tag-lbl">Step 8b:</span> ${stats.steps.quartiles.step2}</div>
+                            <div class="working-row"><span class="tag-lbl">Step 8c:</span> ${stats.steps.quartiles.step3}</div>
+                            <div class="working-row"><span class="tag-lbl">Range:</span> ${stats.steps.range.step1} &rarr; ${stats.steps.range.step2}</div>
+                        </div>
+                        <div class="result-highlight-3d">
+                            <span>Interquartile Range (IQR):</span>
+                            <span class="val-bold">${stats.summary.iqr}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            container.innerHTML = html;
+        }
+
+        // Sample data loader
+        function loadSampleData(sampleNum) {
+            triggerHaptic();
+            const input = document.getElementById('statsInput');
+            if (sampleNum === 1) {
+                input.value = "12, 15, 12, 28, 22, 19, 24";
+            } else {
+                input.value = "10.5, 14.2, 18.0, 14.2, 22.8, 19.5, 25.4, 30.1";
+            }
+            document.getElementById('statsSubmitBtn').click();
+        }
+
+        function clearStatsInput() {
+            triggerHaptic();
+            document.getElementById('statsInput').value = '';
+            document.getElementById('statsResultsContainer').style.display = 'none';
+            document.getElementById('statsErrorContainer').style.display = 'none';
+        }
+
+        // Android Connect Modal Functions
+        function openConnectModal() {
+            triggerHaptic();
+            document.getElementById('connectModal').style.display = 'flex';
+        }
+
+        function closeConnectModal(e) {
+            if (e && e.target !== e.currentTarget && !e.target.classList.contains('btn-modal-close-3d')) return;
+            document.getElementById('connectModal').style.display = 'none';
+        }
+
+        function copyAndroidUrl() {
+            triggerHaptic();
+            const urlText = document.getElementById('androidUrl').innerText;
+            navigator.clipboard.writeText(urlText).then(() => {
+                const btn = document.querySelector('.btn-copy-3d');
+                const orig = btn.innerText;
+                btn.innerText = 'Copied! ✓';
+                setTimeout(() => { btn.innerText = orig; }, 2000);
+            }).catch(() => {
+                alert('URL: ' + urlText);
+            });
+        }
+    </script>
+</body>
+</html>
